@@ -1,3 +1,6 @@
+
+### i apologise for the lack of documenting 
+
 import re
 
 def af(x, solve = False):
