@@ -1,0 +1,75 @@
+def add_time(start, duration, day = None):
+
+    weekdays = ['monday', 'tuesday','wednesday','thursday','friday','saturday','sunday']
+
+    daytimes = {'AM' : 'PM', 'PM' : 'AM'}
+
+#take out function variables and split into format that is manipulable.... hours, minutes,....
+    start_list = start.split()
+    start_time = start_list[0]
+    start_time_list = start_time.split(':')
+    start_hour = int(start_time_list[0])
+    start_min = int(start_time_list[1])
+    daytime = start_list[1]
+
+    duration_list = duration.split(':')
+    duration_hour = int(duration_list[0])
+    duration_min = int(duration_list[1])
+
+#find out the new minutes by adding together and if larger than 60, the remainder is the new minutes
+#adding one extra hour as min will be given <60
+    new_min = start_min + duration_min
+    if new_min > 60:
+        new_min = new_min % 60
+        duration_hour += 1
+
+#adding a 0 in front to keep time format for single digits
+    if new_min < 10:
+        new_min = '0' + str(new_min)
+    else:
+        new_min = new_min
+
+#remainder of sum of start and added = new hour
+    new_hour = (start_hour + duration_hour) % 12
+
+    if new_hour == 0:
+        new_hour = 12
+
+#dividing the sum of start and add by twelve (half day), gives the number of AM/PM flips
+    new_daytime = int((start_hour + duration_hour) / 12)
+
+#divide by two to get the number of days
+    new_day = int(new_daytime / 2)
+
+#new_day doesn't provide number of days if start is PM therefore an added 1 if the day changes
+    if daytime == 'PM' and new_daytime > 0:
+        new_day = new_day + 1
+
+# if day is given find index by intial + number of days % 7
+    if day:
+        day = day.lower()
+        weekdays_index = int(weekdays.index(day))
+        weekdays_new_index = (weekdays_index + int(new_day)) % 7
+        day = weekdays.pop(weekdays_new_index).capitalize()
+
+#an odd number will cause a flip therefore if remainder is 1 --> flip
+    if new_daytime % 2 == 1:
+        daytime = daytimes.get(daytime)
+    else:
+        daytime = daytime
+
+#add day if provided
+    if day:
+        new_time = str(new_hour) + ':' + str(new_min) + ' ' + daytime + ', ' + day
+    else:
+        new_time = str(new_hour) + ':' + str(new_min) + ' ' + daytime
+
+#add number of days
+    if new_day == 1:
+        new_time = new_time + ' (next day)'
+    elif new_day > 1:
+        new_time = new_time + ' (' + str(new_day) + ' days later)'
+
+    return new_time
+
+print(add_time('8:16 PM', '24:02', 'Tuesday'))
