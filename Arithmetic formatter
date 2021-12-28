@@ -1,0 +1,56 @@
+import re
+
+def af(x, solve = False):
+
+    top = ''
+    middle = ''
+    line = ''
+    sum = ''
+
+
+    if len(x) > 5:
+        return 'Error: Too many problems.'
+    for problem in x:  #for each item in list x
+        individual_unit = problem.split()   #create new list of individual things
+        first_num = individual_unit[0]
+        operator = individual_unit[1]
+        second_num = individual_unit[2]
+
+        if re.search("\D", first_num) or re.search("\D", second_num):   #make sure they only contain digits using re
+            return 'Error: Numbers must only contain digits.'
+        if re.search('[/]', operator) or re.search('[*]', operator):
+            return "Error: Operator must be '+' or '-'."
+        if len(first_num) > 4 or len(second_num) > 4:
+            return 'Error: Numbers cannot be more than four digits.'
+
+        if operator == '+':
+            calculation = str(int(first_num) + int(second_num))
+        if operator == '-':
+            calculation = str(int(first_num) - int(second_num))
+
+        spacing = max(len(first_num),len(second_num))
+
+        first_line = str(first_num).rjust(spacing + 2)
+        second_line = operator + ' ' + str(second_num).rjust(spacing)
+        dash = ''
+        third_line = str(calculation).rjust(spacing + 2)
+        for i in range(spacing + 2):
+            dash += '-'
+
+        if problem != x[-1]:
+            top += first_line + '    '
+            middle += second_line + '    '
+            line += dash + '    '
+            sum += third_line + '    '
+        else:
+            top += first_line
+            middle += second_line
+            line += dash
+            sum  += third_line
+    if solve:
+        string = top + '\n' + middle + '\n' + line +'\n' + sum
+    else:
+        string = top + '\n' + middle + '\n' + line
+    return string
+
+print(af(["50 + 50","50 - 50", "40 - 10", "100 + 2000"], True))
